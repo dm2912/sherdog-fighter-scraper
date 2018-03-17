@@ -1,8 +1,22 @@
 """
     A simple scraper to retrieve data from sherdog.py
-    in a predictable/easily machine readable format
+   
 
-    Copyright (c) 2012, Patrick Carey
+    ===============================================================
+    
+    Original script - Copyright (c) 2012, Patrick Carey
+    
+    https://github.com/paddycarey/sherdog-fighter-scraper
+    
+    ===============================================================
+    
+    Requires: Python / Beautiful soup min 3.2.1 / requests min 0.14.2
+    
+    Modified 2018, Dimspace
+    
+    Dates tidied up and timestamps removed, weight classes added, Nicknames added
+    
+    ================================================================
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose with or without fee is hereby granted, provided that the above
@@ -15,6 +29,7 @@
     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
     IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+    
 """
 
 # stdlib imports
@@ -75,32 +90,26 @@ class Scraper(object):
             if birth_date == 'N/A':
                 birth_date = None
             else:
-                birth_date = datetime.datetime.strptime(birth_date, '%Y-%m-%d')
+                birth_date = datetime.datetime.strptime(birth_date, '%Y-%m-%d').date()
                 birth_date = birth_date.isoformat()
 
-        # get the fighter's locality
+        # get the fighter's nickname
         try:
-            locality = soup.find('span', {'itemprop': 'addressLocality'}).contents[0]
+            nickname = soup.find('span', {'class': 'nickname'}).em.contents[0]
         except AttributeError:
-            locality = None
+            nickname = None
+            
+        # get the fighter's weight-class
+        try:
+            wclass = soup.find('h6', {'class': 'item wclass'}).strong.a.contents[0]
+        except AttributeError:
+            wclass = None
 
-        # get the fighter's locality
+        # get the fighter's nationality
         try:
             nationality = soup.find('strong', {'itemprop': 'nationality'}).contents[0]
         except AttributeError:
             nationality = None
-
-        # get the fighter's height in CM
-        try:
-            height_cm = soup.find('span', {'class': 'item height'}).contents[-1].lstrip().rstrip().replace(' cm', '')
-        except AttributeError:
-            height_cm = None
-
-        # get the fighter's weight in KG
-        try:
-            weight_kg = soup.find('span', {'class': 'item weight'}).contents[-1].lstrip().rstrip().replace(' kg', '')
-        except AttributeError:
-            weight_kg = None
 
         # get the fighter's camp/team
         try:
@@ -108,6 +117,10 @@ class Scraper(object):
         except AttributeError:
             camp_team = None
 
+        last_fight = soup.find('span', {'class': 'sub_line'}).contents[0]
+        last_fight = datetime.datetime.strptime(last_fight, '%b / %d / %Y').date()
+        last_fight = last_fight.isoformat()
+              
         wld = {}
         wld['wins'] = 0
         wld['losses'] = 0
@@ -115,25 +128,21 @@ class Scraper(object):
         wlds = soup.findAll('span', {'class': 'result'})
         for x in wlds:
             wld[x.contents[0].lower()] = x.findNextSibling('span').contents[0]
-
-        last_fight = soup.find('span', {'class': 'sub_line'}).contents[0]
-        last_fight = datetime.datetime.strptime(last_fight, '%b / %d / %Y')
-        last_fight = last_fight.isoformat()
+            
 
         # build a dict with the scraped data and return it
         result = {
             'name': name,
             'birth_date': birth_date,
-            'locality': locality,
+            'nickname': nickname,
+            'wclass': wclass,
             'nationality': nationality,
-            'height_cm': height_cm,
-            'weight_kg': weight_kg,
             'camp_team': camp_team,
             'id': fighter_id,
+            'last_fight': last_fight,
             'wins': wld['wins'],
             'losses': wld['losses'],
             'draws': wld['draws'],
-            'last_fight': last_fight,
         }
         return result
 
@@ -178,7 +187,7 @@ if __name__ == '__main__':
     out_file = open('sherdog-fighters.csv', 'w')
     csv_file = UnicodeWriter(out_file)
 
-    headers = ['ID', 'Name', 'Date of Birth', 'Weight (KG)', 'Height (CM)', 'Locality', 'Nationality', 'Association', 'Wins', 'Losses', 'Draws', 'Last Fight']
+    headers = ['ID', 'Name', 'Nickname', 'Date of Birth', 'Nation', 'Weight Class', 'Gym', 'W', 'L', 'D', 'Last Fight']
     csv_file.writerow(headers)
 
     x = 1
@@ -197,11 +206,10 @@ if __name__ == '__main__':
             row = [
                 fighter['id'],
                 fighter['name'],
+                fighter['nickname'],
                 fighter['birth_date'],
-                fighter['weight_kg'],
-                fighter['height_cm'],
-                fighter['locality'],
                 fighter['nationality'],
+                fighter['wclass'],
                 fighter['camp_team'],
                 fighter['wins'],
                 fighter['losses'],
