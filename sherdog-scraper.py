@@ -116,7 +116,19 @@ class Scraper(object):
             camp_team = soup.find('h5', {'class': 'item association'}).strong.span.a.span.contents[0]
         except AttributeError:
             camp_team = None
+            
+"""        # get the fighter's height in CM
+        try:
+            height_cm = soup.find('span', {'class': 'item height'}).contents[-1].lstrip().rstrip().replace(' cm', '')
+        except AttributeError:
+            height_cm = None
 
+        # get the fighter's weight in KG
+        try:
+            weight_kg = soup.find('span', {'class': 'item weight'}).contents[-1].lstrip().rstrip().replace(' kg', '')
+        except AttributeError:
+            weight_kg = None    
+"""
         last_fight = soup.find('span', {'class': 'sub_line'}).contents[0]
         last_fight = datetime.datetime.strptime(last_fight, '%b / %d / %Y').date()
         last_fight = last_fight.isoformat()
@@ -139,6 +151,8 @@ class Scraper(object):
             'nationality': nationality,
             'camp_team': camp_team,
             'id': fighter_id,
+            #'height_cm': height_cm,
+            #'weight_kg': weight_kg,
             'last_fight': last_fight,
             'wins': wld['wins'],
             'losses': wld['losses'],
@@ -210,6 +224,8 @@ if __name__ == '__main__':
                 fighter['birth_date'],
                 fighter['nationality'],
                 fighter['wclass'],
+                #fighter['weight_kg'],
+                #fighter['height_cm'],
                 fighter['camp_team'],
                 fighter['wins'],
                 fighter['losses'],
