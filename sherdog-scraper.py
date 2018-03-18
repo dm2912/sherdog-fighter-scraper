@@ -104,6 +104,18 @@ class Scraper(object):
             wclass = soup.find('h6', {'class': 'item wclass'}).strong.a.contents[0]
         except AttributeError:
             wclass = None
+			
+        # get the fighter's height in CM
+        try:
+            height_cm = soup.find('span', {'class': 'item height'}).contents[-1].lstrip().rstrip().replace(' cm', '')
+        except AttributeError:
+            height_cm = None
+
+        # get the fighter's weight in KG
+        try:
+            weight_kg = soup.find('span', {'class': 'item weight'}).contents[-1].lstrip().rstrip().replace(' kg', '')
+        except AttributeError:
+            weight_kg = None    
 
         # get the fighter's nationality
         try:
@@ -117,18 +129,6 @@ class Scraper(object):
         except AttributeError:
             camp_team = None
             
-"""        # get the fighter's height in CM
-        try:
-            height_cm = soup.find('span', {'class': 'item height'}).contents[-1].lstrip().rstrip().replace(' cm', '')
-        except AttributeError:
-            height_cm = None
-
-        # get the fighter's weight in KG
-        try:
-            weight_kg = soup.find('span', {'class': 'item weight'}).contents[-1].lstrip().rstrip().replace(' kg', '')
-        except AttributeError:
-            weight_kg = None    
-"""
         last_fight = soup.find('span', {'class': 'sub_line'}).contents[0]
         last_fight = datetime.datetime.strptime(last_fight, '%b / %d / %Y').date()
         last_fight = last_fight.isoformat()
@@ -151,7 +151,7 @@ class Scraper(object):
             'nationality': nationality,
             'camp_team': camp_team,
             'id': fighter_id,
-            #'height_cm': height_cm,
+            'height_cm': height_cm,
             #'weight_kg': weight_kg,
             'last_fight': last_fight,
             'wins': wld['wins'],
@@ -201,7 +201,7 @@ if __name__ == '__main__':
     out_file = open('sherdog-fighters.csv', 'w')
     csv_file = UnicodeWriter(out_file)
 
-    headers = ['ID', 'Name', 'Nickname', 'Date of Birth', 'Nation', 'Weight Class', 'Gym', 'W', 'L', 'D', 'Last Fight']
+    headers = ['ID', 'Name', 'Nickname', 'Date of Birth', 'Nation', 'Weight Class', 'Height', 'Gym', 'W', 'L', 'D', 'Last Fight']
     csv_file.writerow(headers)
 
     x = 1
@@ -225,7 +225,7 @@ if __name__ == '__main__':
                 fighter['nationality'],
                 fighter['wclass'],
                 #fighter['weight_kg'],
-                #fighter['height_cm'],
+                fighter['height_cm'],
                 fighter['camp_team'],
                 fighter['wins'],
                 fighter['losses'],
