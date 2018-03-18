@@ -10,7 +10,7 @@ Added nickname, weight class, and fixed date stripping empty timestamp
 Instructions:
 -------------
 
-Clone this repo:
+Clone this repo (Or just download requirements.txt and sherdog-scraper.py and open a terminal window):
 
     git clone git@github.com:dm2912/sherdog-fighter-scraper.git
 
@@ -25,3 +25,7 @@ Run:
 Once the scraper has finished you should have an Excel compatible .csv file that you can use in any way you see fit... 
 
 
+
+
+
+Tested in Linux Mint 18.3 - Dont ask me about Python in Windoze :D
