@@ -13,9 +13,13 @@
     
     v1. Modified 2018, Dimspace
     Dates tidied up and timestamps removed, weight classes added, Nicknames added
-
-    v2. Modifed 2018, Alejandro Castellanos Jaramillo
+    
+    https://github.com/dm2912/sherdog-fighter-scraper/
+    
+    v2. Modifed 2018, Alejandro Castellanos Jaramillo 
     ID iteration report added, ability to specify scrape range. Exports to json now.
+    
+    https://gitlab.com/alejandrocastellanosjaramillo/MMA_cosas/tree/master
     
     ================================================================
     Permission to use, copy, modify, and/or distribute this software for any
