@@ -12,7 +12,7 @@
     
     Requires: Python / Beautiful soup min 3.2.1 / requests min 0.14.2
     
-    Modified 2018, Dimspace
+    v1. Modified 2018, Dimspace
     
     Dates tidied up and timestamps removed, weight classes added, Nicknames added
     
