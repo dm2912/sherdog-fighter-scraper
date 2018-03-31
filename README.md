@@ -20,12 +20,8 @@ Install the requirements:
 
 Run:
 
-    python sherdog-scraper.py
+    python filename_version.py
 
-Once the scraper has finished you should have an Excel compatible .csv file that you can use in any way you see fit... 
+V1 - Exports automatically to csv file
 
-
-
-
-
-Tested in Linux Mint 18.3 - Dont ask me about Python in Windoze :D
+V2 - Can now specify range to scrape (see end of file) and exports automatically to Json file
